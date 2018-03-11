@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CentsaMobile</string>
+    <string name="facebook_app_id">531919070519328</string>
+    <string name="fb_login_protocol_scheme">fb531919070519328</string>
 </resources>
