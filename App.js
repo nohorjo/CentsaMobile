@@ -11,13 +11,26 @@ import FBLoginView from './FBLoginView'
 
 const loginError = () => Alert.alert("Error with Facebook login");
 
-function log(e) {
+async function login(e) {
   if (e.type == 'success') {
-    // Send to server
-    // {
-    //   userId: e.credentials.userId,
-    //   accessToken: e.credentials.token
-    // }
+    //FIXME: replace with actual host for prod
+    const resp = await fetch("http://192.168.1.10:8080/fb", {
+      method: "POST",
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        userID: e.credentials.userId,
+        accessToken: e.credentials.token
+      }),
+      credentials: 'include'
+    });
+    if (resp.ok) {
+      const connectSid = resp.headers.map["set-cookie"][0].split(";").find(c => c.startsWith("connect.sid")).split("=")[1];
+      //TODO: store this somewhere for future use
+    } else {
+      loginError();
+    }
   } else {
     loginError();
   }
@@ -38,9 +51,9 @@ export default class App extends Component<Props> {
           ref={(fbLogin) => { this.fbLogin = fbLogin }}
           loginBehavior={FBLoginManager.LoginBehaviors.Native}
           permissions={["email"]}
-          onLogin={log}
+          onLogin={login}
           onLoginFound={nothing}
-          onLoginNotFound={loginError}
+          onLoginNotFound={nothing}
           onLogout={nothing}
           onCancel={loginError}
           onPermissionsMissing={loginError}
