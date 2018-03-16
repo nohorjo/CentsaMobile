@@ -2,8 +2,6 @@
 //FIXME: replace with actual host for prod
 const serverAddress = "http://192.168.1.11:8080";
 
-let connectSid;
-
 export async function authenticate(e) {
   if (e.type == 'success') {
     const resp = await fetch(`${serverAddress}/fb`, {
@@ -17,13 +15,19 @@ export async function authenticate(e) {
       }),
       credentials: 'include'
     });
-    if (resp.ok) {
-      connectSid = resp.headers.map["set-cookie"][0].split(";").find(c => c.startsWith("connect.sid")).split("=")[1];
-      return true;
-    } else {
-      return false;
-    }
+    return resp.ok;
   } else {
     return false;
+  }
+}
+
+export function logout() {
+  if (connectSid) {
+    fetch(`${serverAddress}/fb`, {
+      method: "DELETE",
+      headers: {
+        'content-type': 'application/json'
+      },
+    });
   }
 }

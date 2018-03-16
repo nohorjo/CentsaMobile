@@ -4,34 +4,36 @@ import {
     Text,
     View,
     Alert
-  } from 'react-native';
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
 
 var Icon = require('react-native-vector-icons/FontAwesome');
 
-import { authenticate } from './Remote';
+import { authenticate, debug } from './Remote';
 
 const loginError = () => Alert.alert("Error with Facebook login");
 const nothing = () => null;
 
-async function login(e) {
-  if (e.type == 'success' && await authenticate(e)) {
-  } else {
-    loginError();
-  }
-}
 
 export default class FBLoginView extends Component {
     static navigationOptions = {
         header: null
     };
     render() {
+        const { navigate } = this.props.navigation;
+        async function login(e, cb) {
+            if (e.type == 'success' && await authenticate(e)) {
+                navigate("Transactions");
+            } else {
+                loginError();
+            }
+        }
         return (
             <View style={styles.container}>
                 <Text style={styles.welcome}>
                     Centsa
-          </Text>
+                </Text>
                 <FBLogin
                     buttonView={<FBLoginButton />}
                     ref={(fbLogin) => { this.fbLogin = fbLogin }}
@@ -40,7 +42,7 @@ export default class FBLoginView extends Component {
                     onLogin={login}
                     onLoginFound={nothing}
                     onLoginNotFound={nothing}
-                    onLogout={nothing}
+                    onLogout={debug}
                     onCancel={loginError}
                     onPermissionsMissing={loginError}
                 />
@@ -66,11 +68,11 @@ class FBLoginButton extends Component {
         return (
             <View>
                 <Icon.Button onPress={() => {
-                    if (!this.context.isLoggedIn) {
-                        this.context.login();
+                    if (this.context.isLoggedIn) {
+                        this.context.logout();
                         this.message = 'Login with Facebook';
                     } else {
-                        this.context.logout();
+                        this.context.login();
                         this.message = 'Logout';
                     }
 
@@ -87,15 +89,14 @@ class FBLoginButton extends Component {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#F5FCFF',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
     },
     welcome: {
-      fontSize: 30,
-      textAlign: 'center',
-      margin: 20,
+        fontSize: 30,
+        textAlign: 'center',
+        margin: 20,
     },
-  });
-  
+});
