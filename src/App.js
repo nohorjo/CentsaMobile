@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
 import FBLoginView from './FBLoginView'
-import { authenticate } from './remote';
+import { authenticate } from './Remote';
 
 const loginError = () => Alert.alert("Error with Facebook login");
 
