@@ -10,7 +10,7 @@ import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
 
 var Icon = require('react-native-vector-icons/FontAwesome');
 
-import { authenticate, debug } from './Remote';
+import { authenticate, logout } from './Remote';
 
 const loginError = () => Alert.alert("Error with Facebook login");
 const nothing = () => null;
@@ -42,7 +42,7 @@ export default class FBLoginView extends Component {
                     onLogin={login}
                     onLoginFound={nothing}
                     onLoginNotFound={nothing}
-                    onLogout={debug}
+                    onLogout={logout}
                     onCancel={loginError}
                     onPermissionsMissing={loginError}
                 />

@@ -22,12 +22,43 @@ export async function authenticate(e) {
 }
 
 export function logout() {
-  if (connectSid) {
-    fetch(`${serverAddress}/fb`, {
-      method: "DELETE",
-      headers: {
-        'content-type': 'application/json'
-      },
-    });
-  }
+  fetch(`${serverAddress}/fb`, {
+    method: "DELETE",
+    headers: {
+      'content-type': 'application/json'
+    },
+  });
+}
+
+export function getBudget() {
+  return fetch(`${serverAddress}/api/general/budget`, {
+    method: "GET",
+    headers: {
+      'x-date': new Date()
+    },
+  });
+}
+
+export function getAccounts() {
+  return fetch(`${serverAddress}/api/accounts`, { method: "GET" });
+}
+
+export function getExpenses() {
+  return fetch(`${serverAddress}/api/expenses`, { method: "GET" });
+}
+
+export function getTypes() {
+  return fetch(`${serverAddress}/api/types`, { method: "GET" });
+}
+
+export async function saveTransaction(trans) {
+  return fetch(`${serverAddress}/api/transactions`, {
+    method: "POST",
+    headers: {
+      'content-type': 'application/json',
+      'x-date': new Date()
+    },
+    body: JSON.stringify(trans),
+    credentials: 'include'
+  });
 }
