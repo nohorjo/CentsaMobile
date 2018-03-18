@@ -7,14 +7,12 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
+import { authenticate, logout, checkLoggedIn } from './Remote';
 
 var Icon = require('react-native-vector-icons/FontAwesome');
 
-import { authenticate, logout } from './Remote';
-
 const loginError = () => Alert.alert("Error with Facebook login");
 const nothing = () => null;
-
 
 export default class FBLoginView extends Component {
     static navigationOptions = {
@@ -22,6 +20,7 @@ export default class FBLoginView extends Component {
     };
     render() {
         const { navigate } = this.props.navigation;
+        checkLoggedIn(loggedIn => loggedIn && navigate("Transactions"));
         async function login(e, cb) {
             if (e.type == 'success' && await authenticate(e)) {
                 navigate("Transactions");
@@ -62,21 +61,22 @@ class FBLoginButton extends Component {
     constructor(props) {
         super(props);
         this.message = 'Login with Facebook';
+        checkLoggedIn(loggedIn => loggedIn && (this.message = 'Logout'));
     }
 
     render() {
         return (
             <View>
-                <Icon.Button onPress={() => {
-                    if (this.context.isLoggedIn) {
-                        this.context.logout();
-                        this.message = 'Login with Facebook';
-                    } else {
-                        this.context.login();
-                        this.message = 'Logout';
-                    }
-
-                }}
+                <Icon.Button
+                    onPress={() => {
+                        if (this.context.isLoggedIn) {
+                            this.context.logout();
+                            this.message = 'Login with Facebook';
+                        } else {
+                            this.context.login();
+                            this.message = 'Logout';
+                        }
+                    }}
                     name="facebook" backgroundColor={"#3b5998"} >
                     <Text style={{ fontFamily: 'Arial', fontSize: 15, color: "#ffffff" }}>
                         {this.message}

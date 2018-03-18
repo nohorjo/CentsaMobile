@@ -1,6 +1,9 @@
+import CookieManager from 'react-native-cookies';
 
 //FIXME: replace with actual host for prod
 const serverAddress = "http://192.168.1.11:8080";
+
+let loggedIn = null;
 
 export async function authenticate(e) {
   if (e.type == 'success') {
@@ -15,13 +18,14 @@ export async function authenticate(e) {
       }),
       credentials: 'include'
     });
-    return resp.ok;
+    return loggedIn = resp.ok;
   } else {
-    return false;
+    return loggedIn = false;
   }
 }
 
 export function logout() {
+  loggedIn = false;
   fetch(`${serverAddress}/fb`, {
     method: "DELETE",
     headers: {
@@ -62,3 +66,11 @@ export async function saveTransaction(trans) {
     credentials: 'include'
   });
 }
+
+export function checkLoggedIn(cb) {
+  if (loggedIn == null) {
+    CookieManager.get(serverAddress).then((res) => cb(loggedIn = !!res["connect.sid"]));
+  } else {
+    cb(loggedIn);
+  }
+};
