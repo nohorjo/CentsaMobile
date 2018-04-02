@@ -1,7 +1,6 @@
 import CookieManager from 'react-native-cookies';
 
-//FIXME: replace with actual host for prod
-const serverAddress = "http://192.168.1.11:8080";
+const serverAddress = "https://centsa.herokuapp.com";
 
 let loggedIn = null;
 
@@ -35,7 +34,7 @@ export function logout() {
 }
 
 export function getBudget() {
-  return fetch(`${serverAddress}/api/general/budget`, {
+  return fetch(`${serverAddress}/api/general/budget?strict=true`, {
     method: "GET",
     headers: {
       'x-date': new Date()
