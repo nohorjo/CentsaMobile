@@ -2,11 +2,11 @@
 import React, { Component } from 'react';
 import {
     Text,
-    View,
     TextInput,
     Picker,
     Button,
-    Alert
+    Alert,
+    KeyboardAvoidingView
 } from 'react-native';
 import {
     getBudget,
@@ -87,7 +87,7 @@ export default class TransactionsView extends Component {
     };
     render() {
         return (
-            <View>
+            <KeyboardAvoidingView behavior="position">
                 <Text>Budget:</Text>
                 <Text>After all: {(this.state.budget.afterAll / 100).toFixed(2)}</Text>
                 <Text>After auto: {(this.state.budget.afterAuto / 100).toFixed(2)}</Text>
@@ -161,7 +161,7 @@ export default class TransactionsView extends Component {
                     title="Save"
                     onPress={this.save.bind(this, this.state.newTransaction)}
                 />
-            </View>
+            </KeyboardAvoidingView>
         );
     }
 }
