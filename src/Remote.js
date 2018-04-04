@@ -66,21 +66,33 @@ export async function saveTransaction(trans) {
   });
 }
 
+let userSettings = null;
+
 export function checkLoggedIn(cb) {
   if (loggedIn == null) {
-    CookieManager.get(serverAddress).then((res) => cb(loggedIn = !!res["connect.sid"]));
+    CookieManager.get(serverAddress).then(async cookies => {
+      if (!!cookies["connect.sid"]) {
+        await loadSettings();
+      }
+      cb(loggedIn = userSettings != null);
+    });
   } else {
     cb(loggedIn);
   }
 }
 
-let userSettings = null;
-
 export async function getSetting(setting) {
   if (!userSettings) {
-    userSettings = await (await fetch(`${serverAddress}/api/settings`, { method: "GET" })).json();
+    await loadSettings();
   }
   return userSettings[setting];
+}
+
+async function loadSettings() {
+  const resp = await fetch(`${serverAddress}/api/settings`, { method: "GET" });
+  if (resp.ok) {
+    userSettings = await resp.json();
+  }
 }
 
 export async function saveSetting(setting, value) {
