@@ -72,4 +72,25 @@ export function checkLoggedIn(cb) {
   } else {
     cb(loggedIn);
   }
-};
+}
+
+let userSettings = null;
+
+export async function getSetting(setting) {
+  if (!userSettings) {
+    userSettings = await (await fetch(`${serverAddress}/api/settings`, { method: "GET" })).json();
+  }
+  return userSettings[setting];
+}
+
+export async function saveSetting(setting, value) {
+  return fetch(`${serverAddress}/api/settings`, {
+    method: "POST",
+    headers: {
+      'content-type': 'application/json',
+      'x-date': new Date()
+    },
+    body: JSON.stringify({ key: setting, value: value }),
+    credentials: 'include'
+  });
+}

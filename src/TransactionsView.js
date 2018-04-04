@@ -13,7 +13,8 @@ import {
     getAccounts,
     getExpenses,
     getTypes,
-    saveTransaction
+    saveTransaction,
+    getSetting
 } from './Remote';
 import DatePicker from 'react-native-datepicker'
 
@@ -40,12 +41,12 @@ export default class TransactionsView extends Component {
             newTransaction: Object.assign({}, baseTransaction)
         };
         this.updateBudget();
-        getAccounts().then(async resp => {
-            const accounts = await resp.json();
+        getSetting("default.account").then(async value => {
+            const accounts = await (await getAccounts()).json();
             this.setState(
                 _state => {
                     _state.accounts = accounts;
-                    _state.newTransaction.account_id = accounts.find(x => x.name == "Default").id;
+                    _state.newTransaction.account_id = value;
                     baseTransaction.account_id = _state.newTransaction.account_id;
                     return _state;
                 });
